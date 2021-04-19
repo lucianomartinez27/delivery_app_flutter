@@ -10,8 +10,8 @@ class Product {
     }
   }
 
-  bool isNamed(String s) {
-    return true;
+  bool isNamed(String potentialName) {
+    return name == potentialName;
   }
 }
 

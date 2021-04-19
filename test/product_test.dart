@@ -13,5 +13,10 @@ main() {
       Product product = Product(name: "Phone", price: 0);
       assert(product.isNamed("Phone"));
     });
+
+    test("Product knows what is not his name", () {
+      Product product = Product(name: "Phone", price: 0);
+      assert(!product.isNamed("Banana"));
+    });
   });
 }
