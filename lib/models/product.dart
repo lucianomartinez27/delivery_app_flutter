@@ -3,12 +3,14 @@ import 'package:flutter/foundation.dart';
 class Product {
   final String name;
   final int price;
+  static const String INVALID_NAME_ERROR = "Name can not be empty";
+  static const String INVALID_PRICE_ERROR = "Price can be less than zero.";
 
   Product({@required this.name, @required this.price}) {
     if (name.isEmpty) {
-      throw InvalidNameError("Name can not be empty");
+      throw InvalidNameError(INVALID_NAME_ERROR);
     } else if (price < 0) {
-      throw ArgumentError("Price can be less than zero.");
+      throw ArgumentError(INVALID_PRICE_ERROR);
     }
   }
 
