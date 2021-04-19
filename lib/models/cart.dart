@@ -5,7 +5,7 @@ class Cart {
 
   get totalPrice => productsList
       .map((product) => product.price)
-      .reduce((previousPrice, currentPrice) => previousPrice + currentPrice);
+      .fold(0, (previousPrice, currentPrice) => previousPrice + currentPrice);
 
   bool hasProducts() {
     return productsList.isNotEmpty;
@@ -17,5 +17,9 @@ class Cart {
 
   bool contains(Product potentialProduct) {
     return productsList.contains(potentialProduct);
+  }
+
+  int totalOf(Product potentialProduct) {
+    return productsList.where((element) => element == potentialProduct).length;
   }
 }

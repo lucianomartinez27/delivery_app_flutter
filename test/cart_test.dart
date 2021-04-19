@@ -37,5 +37,19 @@ main() {
 
       expect(cart.totalPrice, productsPrice);
     });
+
+    test("Total of a product in an empry cart is zero", () {
+      expect(cart.totalOf(iceCream), 0);
+    });
+
+    test("When products are added to a cart the total of them increases", () {
+      cart.addProduct(snacks);
+      expect(cart.totalOf(snacks), 1);
+
+      cart.addProduct(snacks);
+      cart.addProduct(iceCream);
+      expect(cart.totalOf(snacks), 2);
+      expect(cart.totalOf(iceCream), 1);
+    });
   });
 }
