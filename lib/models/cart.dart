@@ -3,6 +3,10 @@ import 'package:delivery_app/models/product.dart';
 class Cart {
   List<Product> productsList = [];
 
+  get totalPrice => productsList
+      .map((product) => product.price)
+      .reduce((previousPrice, currentPrice) => previousPrice + currentPrice);
+
   bool hasProducts() {
     return productsList.isNotEmpty;
   }
