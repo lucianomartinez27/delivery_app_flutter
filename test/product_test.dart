@@ -18,5 +18,21 @@ main() {
       Product product = Product(name: "Phone", price: 0);
       assert(!product.isNamed("Banana"));
     });
+
+    test("Product price can not be negative", () {
+      expect(() {
+        Product(name: 'Phone', price: -2);
+      }, throwsArgumentError);
+    });
+
+    test("Product with price above zero can be created correctly", () {
+      Product product = Product(name: "Phone", price: 10);
+      assert(product.isPriced(10));
+    });
+    test("Product knows his price correctly", () {
+      Product product = Product(name: "Phone", price: 0);
+      assert(!product.isPriced(10));
+      assert(product.isPriced(0));
+    });
   });
 }
