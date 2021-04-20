@@ -9,19 +9,15 @@ class ProductShelf extends ChangeNotifier {
   get allProducts => UnmodifiableListView(_products);
 
   void addProduct(Product productToAdd) {
-    if (thereIsNoProduct(productToAdd)) {
+    if (!hasProduct(productToAdd)) {
       _products.add(productToAdd);
       notifyListeners();
     }
   }
 
-  bool thereIsNoProduct(Product productToAdd) {
-    return _products
-        .where((element) => element.isNamed(productToAdd.name))
-        .isEmpty;
-  }
-
   bool hasProduct(Product potentialProduct) {
-    return _products.contains(potentialProduct);
+    return _products
+        .where((element) => element.isNamed(potentialProduct.name))
+        .isNotEmpty;
   }
 }
