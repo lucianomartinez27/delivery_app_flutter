@@ -24,7 +24,7 @@ main() {
     test("A shelf can not contains the same product twice", () {
       shelf.addProduct(iceCream);
       shelf.addProduct(snack);
-      shelf.addProduct(iceCream);
+      shelf.addProduct(Product(name: "Ice Cream", price: 10));
       expect(shelf.allProducts.length, 2);
       assert(shelf.hasProduct(iceCream));
       assert(shelf.hasProduct(snack));
