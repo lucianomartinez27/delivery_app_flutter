@@ -1,6 +1,7 @@
 import 'package:delivery_app/models/product.dart';
+import 'package:flutter/foundation.dart';
 
-class Cart {
+class Cart extends ChangeNotifier {
   List<Product> productsList = [];
 
   get totalPrice => productsList
@@ -12,6 +13,7 @@ class Cart {
   }
 
   void addProduct(Product productToAdd) {
+    notifyListeners();
     productsList.add(productToAdd);
   }
 
