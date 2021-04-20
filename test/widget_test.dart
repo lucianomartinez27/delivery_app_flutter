@@ -13,12 +13,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:delivery_app/main.dart';
 import 'package:provider/provider.dart';
 
-ProductShelf productShelf = ProductShelf();
-
 void main() {
+  ProductShelf productShelf = ProductShelf();
   productShelf.addProduct(Product(name: "Ice Cream", price: 10));
+
   testWidgets('Products appear on Home Screen', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
     await tester.pumpWidget(
       ChangeNotifierProvider<ProductShelf>(
         create: (context) => productShelf,
@@ -29,7 +28,19 @@ void main() {
     productShelf.addProduct(Product(name: "Snacks", price: 5));
     await tester.pump();
     expect(find.text("Snacks - Price: 5"), findsOneWidget);
+  });
 
-    //await tester.pump();
+  testWidgets('When a product is clicked it redirects to ProductDetail page',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      ChangeNotifierProvider<ProductShelf>(
+        create: (context) => productShelf,
+        child: MaterialApp(home: HomePage()),
+      ),
+    );
+
+    await tester.tap(find.byType(GestureDetector));
+    await tester.pumpAndSettle();
+    expect(find.byType(ProductDetail), findsOneWidget);
   });
 }
