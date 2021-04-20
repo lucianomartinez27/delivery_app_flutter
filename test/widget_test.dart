@@ -43,4 +43,19 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(ProductDetail), findsOneWidget);
   });
+
+  testWidgets('There is a button that redirects to CartDetail',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      ChangeNotifierProvider<ProductShelf>(
+        create: (context) => productShelf,
+        child: MaterialApp(home: HomePage()),
+      ),
+    );
+
+    expect(find.byType(MaterialButton), findsOneWidget);
+    await tester.tap(find.byType(MaterialButton));
+    await tester.pumpAndSettle();
+    expect(find.byType(CartDetail), findsOneWidget);
+  });
 }
