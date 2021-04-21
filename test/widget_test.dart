@@ -11,19 +11,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:delivery_app/main.dart';
-import 'package:provider/provider.dart';
+
+ProductShelf productShelf;
 
 void main() {
-  ProductShelf productShelf = ProductShelf();
-  productShelf.addProduct(Product(name: "Ice Cream", price: 10));
-
+  setUp(() {
+    productShelf = ProductShelf();
+    productShelf.addProduct(Product(name: "Ice Cream", price: 10));
+  });
   testWidgets('Products appear on Home Screen', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      ChangeNotifierProvider<ProductShelf>(
-        create: (context) => productShelf,
-        child: MaterialApp(home: HomePage()),
-      ),
-    );
+    await tester.pumpWidget(MyApp(productShelf));
     expect(find.text("Ice Cream - Price: 10"), findsOneWidget);
     productShelf.addProduct(Product(name: "Snacks", price: 5));
     await tester.pump();
@@ -32,26 +29,16 @@ void main() {
 
   testWidgets('When a product is clicked it redirects to ProductDetail page',
       (WidgetTester tester) async {
-    await tester.pumpWidget(
-      ChangeNotifierProvider<ProductShelf>(
-        create: (context) => productShelf,
-        child: MaterialApp(home: HomePage()),
-      ),
-    );
+    await tester.pumpWidget(MyApp(productShelf));
 
-    await tester.tap(find.byType(GestureDetector));
+    await tester.tap(find.byType(GestureDetector).first);
     await tester.pumpAndSettle();
     expect(find.byType(ProductDetail), findsOneWidget);
   });
 
   testWidgets('There is a button that redirects to CartDetail',
       (WidgetTester tester) async {
-    await tester.pumpWidget(
-      ChangeNotifierProvider<ProductShelf>(
-        create: (context) => productShelf,
-        child: MaterialApp(home: HomePage()),
-      ),
-    );
+    await tester.pumpWidget(MyApp(productShelf));
 
     expect(find.byType(MaterialButton), findsOneWidget);
     await tester.tap(find.byType(MaterialButton));
