@@ -102,4 +102,18 @@ void main() {
             .hasProducts(),
         isTrue);
   });
+
+  testWidgets('A cart shows te products and total of them',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(MyApp(productShelf));
+
+    await tester.tap(find.byType(GestureDetector).first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.tap(find.byType(MaterialButton));
+    await tester.pumpAndSettle();
+
+    expect(find.text("Ice Cream - 2"), findsOneWidget);
+  });
 }

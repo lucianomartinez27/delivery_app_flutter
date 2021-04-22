@@ -143,7 +143,10 @@ class CartDetail extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [Text("CARRITO")],
+          children: cart.uniqueProducts
+              .map<Widget>((product) =>
+                  Text("${product.name} - ${cart.totalOf(product)}"))
+              .toList(),
         ),
       ),
     );

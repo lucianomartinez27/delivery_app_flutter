@@ -51,5 +51,13 @@ main() {
       expect(cart.totalOf(snacks), 2);
       expect(cart.totalOf(iceCream), 1);
     });
+    test("A cart can be consulted for what types of products it has", () {
+      cart.addProduct(snacks);
+      cart.addProduct(snacks);
+      cart.addProduct(iceCream);
+      expect(cart.uniqueProducts, contains(iceCream));
+      expect(cart.uniqueProducts, contains(snacks));
+      expect(cart.uniqueProducts.length, equals(2));
+    });
   });
 }

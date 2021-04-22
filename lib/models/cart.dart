@@ -8,6 +8,8 @@ class Cart extends ChangeNotifier {
       .map((product) => product.price)
       .fold(0, (previousPrice, currentPrice) => previousPrice + currentPrice);
 
+  get uniqueProducts => Set.from(productsList);
+
   bool hasProducts() {
     return productsList.isNotEmpty;
   }
