@@ -36,7 +36,15 @@ void main() {
     expect(find.byType(ProductDetail), findsOneWidget);
   });
 
-  testWidgets('There is a button that redirects to CartDetail',
+  testWidgets('A Product Detail shows the correct product',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(MyApp(productShelf));
+
+    await tester.tap(find.byType(GestureDetector).first);
+    await tester.pumpAndSettle();
+    expect(find.text("Ice Cream"), findsOneWidget);
+  });
+  testWidgets('There is a button that redirects to CartDetail on Home',
       (WidgetTester tester) async {
     await tester.pumpWidget(MyApp(productShelf));
 
@@ -44,5 +52,54 @@ void main() {
     await tester.tap(find.byType(MaterialButton));
     await tester.pumpAndSettle();
     expect(find.byType(CartDetail), findsOneWidget);
+  });
+
+  testWidgets('There is a button that redirects to CartDetail on ProductDetail',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(MyApp(productShelf));
+    await tester.tap(find.byType(GestureDetector).first);
+    await tester.pumpAndSettle();
+    expect(find.byType(MaterialButton), findsOneWidget);
+    await tester.tap(find.byType(MaterialButton));
+    await tester.pumpAndSettle();
+    expect(find.byType(CartDetail), findsOneWidget);
+  });
+
+  testWidgets('Product Detail shows a button to add product to cart',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(MyApp(productShelf));
+
+    await tester.tap(find.byType(GestureDetector).first);
+    await tester.pumpAndSettle();
+    expect(find.byType(FloatingActionButton), findsOneWidget);
+    expect(find.byIcon(Icons.add), findsOneWidget);
+  });
+
+  testWidgets('A cart has no products on a recently opened App',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(MyApp(productShelf));
+
+    expect(
+        (find.byType(MyApp).evaluate().single.widget as MyApp)
+            .cart
+            .hasProducts(),
+        isFalse);
+  });
+
+  testWidgets('A product can be added to the cart on ProductDetail page',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(MyApp(productShelf));
+
+    await tester.tap(find.byType(GestureDetector).first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.tap(find.byType(MaterialButton));
+    await tester.pumpAndSettle();
+
+    expect(
+        (find.byType(CartDetail).evaluate().single.widget as CartDetail)
+            .cart
+            .hasProducts(),
+        isTrue);
   });
 }
