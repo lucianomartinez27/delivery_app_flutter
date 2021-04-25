@@ -1,19 +1,27 @@
+import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delivery_app/models/cart.dart';
 import 'package:delivery_app/models/product.dart';
 import 'package:delivery_app/models/product_shelf.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'models/services/firestore_manager.dart';
 
-void main() {
-  ProductShelf productShelf = ProductShelf();
-  productShelf.addProduct(Product(name: "Ice Cram", price: 10));
-  productShelf.addProduct(Product(name: "Snacks", price: 10));
-
-  runApp(MyApp(productShelf));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  FirestoreProductManager firestoreProductManager =
+      FirestoreProductManager(FirebaseFirestore.instance);
+  ProductStand stand = ProductStand();
+  firestoreProductManager.onNewProductsDo((newProduct) {
+    stand.newProductList(newProduct);
+  });
+  runApp(MyApp(stand.onNewProductList));
 }
 
 class MyApp extends StatelessWidget {
-  final ProductShelf productShelf;
+  final Stream<ProductShelf> productShelf;
   final Cart cart = Cart();
   MyApp(this.productShelf);
 
@@ -21,8 +29,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<ProductShelf>(
-            create: (context) => this.productShelf),
+        StreamProvider<ProductShelf>(
+            create: (context) => this.productShelf,
+            initialData: ProductShelf()),
         ChangeNotifierProvider<Cart>(create: (context) => this.cart)
       ],
       child: MaterialApp(
@@ -45,7 +54,7 @@ class MyApp extends StatelessWidget {
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var products = Provider.of<ProductShelf>(context).allProducts;
+    List<Product> products = Provider.of<ProductShelf>(context).allProducts;
     return Scaffold(
       body: Center(
         child: Column(

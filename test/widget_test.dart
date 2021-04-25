@@ -5,24 +5,31 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:delivery_app/models/product.dart';
+import 'dart:async';
+
 import 'package:delivery_app/models/product_shelf.dart';
+import 'package:delivery_app/models/services/firestore_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:delivery_app/main.dart';
 
-ProductShelf productShelf;
-
+ProductStand stand;
+Stream<ProductShelf> productShelf;
 void main() {
   setUp(() {
-    productShelf = ProductShelf();
-    productShelf.addProduct(Product(name: "Ice Cream", price: 10));
+    stand = ProductStand();
+    stand.newProductList([
+      {'name': 'Ice Cream', 'price': 10},
+      {'name': 'Snacks', 'price': 5},
+    ]);
+    productShelf = stand.onNewProductList;
   });
+
   testWidgets('Products appear on Home Screen', (WidgetTester tester) async {
     await tester.pumpWidget(MyApp(productShelf));
+    await tester.pumpAndSettle();
     expect(find.text("Ice Cream - Price: 10"), findsOneWidget);
-    productShelf.addProduct(Product(name: "Snacks", price: 5));
     await tester.pump();
     expect(find.text("Snacks - Price: 5"), findsOneWidget);
   });
@@ -30,7 +37,7 @@ void main() {
   testWidgets('When a product is clicked it redirects to ProductDetail page',
       (WidgetTester tester) async {
     await tester.pumpWidget(MyApp(productShelf));
-
+    await tester.pumpAndSettle();
     await tester.tap(find.byType(GestureDetector).first);
     await tester.pumpAndSettle();
     expect(find.byType(ProductDetail), findsOneWidget);
@@ -39,7 +46,7 @@ void main() {
   testWidgets('A Product Detail shows the correct product',
       (WidgetTester tester) async {
     await tester.pumpWidget(MyApp(productShelf));
-
+    await tester.pumpAndSettle();
     await tester.tap(find.byType(GestureDetector).first);
     await tester.pumpAndSettle();
     expect(find.text("Ice Cream"), findsOneWidget);
@@ -47,7 +54,7 @@ void main() {
   testWidgets('There is a button that redirects to CartDetail on Home',
       (WidgetTester tester) async {
     await tester.pumpWidget(MyApp(productShelf));
-
+    await tester.pumpAndSettle();
     expect(find.byType(MaterialButton), findsOneWidget);
     await tester.tap(find.byType(MaterialButton));
     await tester.pumpAndSettle();
@@ -57,6 +64,7 @@ void main() {
   testWidgets('There is a button that redirects to CartDetail on ProductDetail',
       (WidgetTester tester) async {
     await tester.pumpWidget(MyApp(productShelf));
+    await tester.pumpAndSettle();
     await tester.tap(find.byType(GestureDetector).first);
     await tester.pumpAndSettle();
     expect(find.byType(MaterialButton), findsOneWidget);
@@ -68,7 +76,7 @@ void main() {
   testWidgets('Product Detail shows a button to add product to cart',
       (WidgetTester tester) async {
     await tester.pumpWidget(MyApp(productShelf));
-
+    await tester.pumpAndSettle();
     await tester.tap(find.byType(GestureDetector).first);
     await tester.pumpAndSettle();
     expect(find.byType(FloatingActionButton), findsOneWidget);
@@ -78,6 +86,7 @@ void main() {
   testWidgets('A cart has no products on a recently opened App',
       (WidgetTester tester) async {
     await tester.pumpWidget(MyApp(productShelf));
+    await tester.pumpAndSettle();
 
     expect(
         (find.byType(MyApp).evaluate().single.widget as MyApp)
@@ -89,6 +98,7 @@ void main() {
   testWidgets('A product can be added to the cart on ProductDetail page',
       (WidgetTester tester) async {
     await tester.pumpWidget(MyApp(productShelf));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byType(GestureDetector).first);
     await tester.pumpAndSettle();
@@ -106,6 +116,7 @@ void main() {
   testWidgets('A cart shows te products and total of them',
       (WidgetTester tester) async {
     await tester.pumpWidget(MyApp(productShelf));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byType(GestureDetector).first);
     await tester.pumpAndSettle();
