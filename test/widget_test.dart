@@ -29,9 +29,7 @@ void main() {
   testWidgets('Products appear on Home Screen', (WidgetTester tester) async {
     await tester.pumpWidget(MyApp(productShelf));
     await tester.pumpAndSettle();
-    expect(find.text("Ice Cream - Price: 10"), findsOneWidget);
-    await tester.pump();
-    expect(find.text("Snacks - Price: 5"), findsOneWidget);
+    expect(find.byType(ProductTile), findsNWidgets(2));
   });
 
   testWidgets('When a product is clicked it redirects to ProductDetail page',
@@ -126,5 +124,14 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text("Ice Cream - 2"), findsOneWidget);
+  });
+
+  testWidgets('Cart with no products shows a EmptyCart widget',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(MyApp(productShelf));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(MaterialButton));
+    await tester.pumpAndSettle();
+    expect(find.byType(EmptyCart), findsOneWidget);
   });
 }
