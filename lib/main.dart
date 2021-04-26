@@ -44,7 +44,6 @@ class MyApp extends StatelessWidget {
             title: Text("Mi Tienda"),
           ),
           body: HomePage(),
-          bottomSheet: GoToCartBottomBar(cart),
         ),
       ),
     );
@@ -55,32 +54,41 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Product> products = Provider.of<ProductShelf>(context).allProducts;
+    Cart cart = Provider.of<Cart>(context);
+
     return Scaffold(
       body: Center(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+        child: ListView(
             children: products
                 .map<Widget>(
                   (product) => GestureDetector(
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) => ProductDetail(product)),
-                    ),
-                    child: Container(
-                      child: ListTile(
-                        leading: Icon(Icons.fastfood, size: 50),
-                        title:
-                            Text('${product.name} - Price: ${product.price}'),
-                        subtitle: Text('Oferta'),
-                      ),
-                      color: Colors.greenAccent,
-                      padding: EdgeInsets.all(20),
-                      margin: EdgeInsets.all(10),
-                    ),
-                  ),
+                      onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => ProductDetail(product)),
+                          ),
+                      child: ProductTile(product)),
                 )
                 .toList()),
       ),
+      bottomNavigationBar: GoToCartBottomBar(cart),
+    );
+  }
+}
+
+class ProductTile extends StatelessWidget {
+  final Product product;
+  ProductTile(this.product);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: ListTile(
+        leading: Icon(Icons.fastfood, size: 50),
+        title: Text('${product.name} - Precio: \$${product.price}'),
+        subtitle: Text('Descripción del producto'),
+      ),
+      color: Colors.greenAccent,
+      padding: EdgeInsets.all(20),
+      margin: EdgeInsets.all(10),
     );
   }
 }
@@ -94,8 +102,12 @@ class GoToCartBottomBar extends StatelessWidget {
     return BottomAppBar(
       child: Container(
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            Text(
+              "Total: \$${cart.totalPrice}",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             MaterialButton(
                 onPressed: () => {
                       Navigator.of(context).push(
@@ -104,13 +116,13 @@ class GoToCartBottomBar extends StatelessWidget {
                       ),
                     },
                 child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.store),
+                  Icon(Icons.shopping_cart),
                   Text("Ir al Carrito"),
                 ]))
           ],
         ),
         color: Colors.blue,
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(5),
       ),
     );
   }
@@ -127,16 +139,34 @@ class ProductDetail extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [Text(product.name)],
+          children: [
+            Text(product.name, style: TextStyle(fontSize: 32)),
+            Card(
+              color: Colors.amber,
+              child: Text(
+                "Descripción del producto",
+                style: TextStyle(fontSize: 22),
+              ),
+            )
+          ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: ElevatedButton(
         onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${product.name} añadidas al carrito!'),
+              duration: Duration(seconds: 1),
+            ),
+          );
+
           cart.addProduct(product);
         },
-        child: Icon(Icons.add),
+        child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [Text("Añadir al carrito"), Icon(Icons.add)]),
       ),
-      bottomSheet: GoToCartBottomBar(cart),
+      bottomNavigationBar: GoToCartBottomBar(cart),
     );
   }
 }
@@ -150,14 +180,41 @@ class CartDetail extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: cart.uniqueProducts
-              .map<Widget>((product) =>
-                  Text("${product.name} - ${cart.totalOf(product)}"))
-              .toList(),
-        ),
+        child: cart.hasProducts()
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: cart.uniqueProducts
+                    .map<Widget>((product) => Text(
+                        "${product.name} - ${cart.totalOf(product)}",
+                        style: TextStyle(
+                            fontSize: 33,
+                            backgroundColor: Colors.lightGreenAccent)))
+                    .toList())
+            : EmptyCart(),
       ),
     );
+  }
+}
+
+class EmptyCart extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: Container(
+      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Flexible(
+          child: Text(
+            "Ups... todavia no has agreado nada al carrito.",
+            style: TextStyle(
+              color: Colors.black,
+              decorationColor: Colors.red,
+              decorationStyle: TextDecorationStyle.wavy,
+              fontSize: 18,
+            ),
+          ),
+        ),
+        Icon(Icons.shopping_cart_outlined)
+      ]),
+    ));
   }
 }
