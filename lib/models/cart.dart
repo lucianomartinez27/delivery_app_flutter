@@ -14,9 +14,11 @@ class Cart extends ChangeNotifier {
     return productsList.isNotEmpty;
   }
 
-  void addProduct(Product productToAdd) {
+  void addProduct(Product productToAdd, {int times = 1}) {
     notifyListeners();
-    productsList.add(productToAdd);
+    for (var time = 0; time <= times; times++) {
+      productsList.add(productToAdd);
+    }
   }
 
   bool contains(Product potentialProduct) {

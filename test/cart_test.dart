@@ -59,5 +59,12 @@ main() {
       expect(cart.uniqueProducts, contains(snacks));
       expect(cart.uniqueProducts.length, equals(2));
     });
+
+    test("A product can be added a certain ammount of times", () {
+      cart.addProduct(iceCream, times: 3);
+      expect(cart.totalOf(iceCream), equals(3));
+      cart.addProduct(snacks, times: 0);
+      expect(cart.totalOf(snacks), equals(0));
+    });
   });
 }
