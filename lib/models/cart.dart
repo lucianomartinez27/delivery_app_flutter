@@ -16,7 +16,7 @@ class Cart extends ChangeNotifier {
 
   void addProduct(Product productToAdd, {int times = 1}) {
     notifyListeners();
-    for (var time = 0; time <= times; times++) {
+    for (var time = 1; time <= times; time++) {
       productsList.add(productToAdd);
     }
   }
@@ -27,5 +27,9 @@ class Cart extends ChangeNotifier {
 
   int totalOf(Product potentialProduct) {
     return productsList.where((element) => element == potentialProduct).length;
+  }
+
+  totalPriceOf(Product potentialProduct) {
+    return totalOf(potentialProduct) * potentialProduct.price;
   }
 }
