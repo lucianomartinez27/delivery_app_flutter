@@ -66,5 +66,13 @@ main() {
       cart.addProduct(snacks, times: 0);
       expect(cart.totalOf(snacks), equals(0));
     });
+    test("Total price of a product is zero when it's not in the cart", () {
+      expect(cart.totalPriceOf(iceCream), equals(0));
+    });
+
+    test("Cart calculates the total price of a product correctly", () {
+      cart.addProduct(iceCream, times: 4);
+      expect(cart.totalPriceOf(iceCream), equals(40));
+    });
   });
 }
