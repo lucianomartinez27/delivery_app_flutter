@@ -77,7 +77,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byType(GestureDetector).first);
     await tester.pumpAndSettle();
-    expect(find.byType(FloatingActionButton), findsOneWidget);
+    expect(find.byType(AddToCartButton), findsOneWidget);
     expect(find.byIcon(Icons.add), findsOneWidget);
   });
 
@@ -100,7 +100,7 @@ void main() {
 
     await tester.tap(find.byType(GestureDetector).first);
     await tester.pumpAndSettle();
-    await tester.tap(find.byType(FloatingActionButton));
+    await tester.tap(find.byType(AddToCartButton));
     await tester.tap(find.byType(MaterialButton));
     await tester.pumpAndSettle();
 
@@ -118,12 +118,12 @@ void main() {
 
     await tester.tap(find.byType(GestureDetector).first);
     await tester.pumpAndSettle();
-    await tester.tap(find.byType(FloatingActionButton));
-    await tester.tap(find.byType(FloatingActionButton));
+    await tester.tap(find.byType(AddToCartButton));
+    await tester.tap(find.byType(AddToCartButton));
     await tester.tap(find.byType(MaterialButton));
     await tester.pumpAndSettle();
 
-    expect(find.text("Ice Cream - 2"), findsOneWidget);
+    expect(find.byType(ProductOnCartDetail), findsOneWidget);
   });
 
   testWidgets('Cart with no products shows a EmptyCart widget',

@@ -70,7 +70,7 @@ class HomePage extends StatelessWidget {
                 )
                 .toList()),
       ),
-      bottomNavigationBar: GoToCartBottomBar(cart),
+      bottomNavigationBar: GoToBottomBar(GoToCart(), cart),
     );
   }
 }
@@ -86,17 +86,18 @@ class ProductTile extends StatelessWidget {
         title: Text('${product.name} - Precio: \$${product.price}'),
         subtitle: Text('Descripción del producto'),
       ),
-      color: Colors.greenAccent,
+      color: Colors.lightBlueAccent,
       padding: EdgeInsets.all(20),
       margin: EdgeInsets.all(10),
     );
   }
 }
 
-class GoToCartBottomBar extends StatelessWidget {
+class GoToBottomBar extends StatelessWidget {
+  final Widget goTo;
   final Cart cart;
-  GoToCartBottomBar(this.cart);
 
+  GoToBottomBar(this.goTo, this.cart);
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
@@ -108,23 +109,30 @@ class GoToCartBottomBar extends StatelessWidget {
               "Total: \$${cart.totalPrice}",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            MaterialButton(
-                onPressed: () => {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => CartDetail(cart)),
-                      ),
-                    },
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.shopping_cart),
-                  Text("Ir al Carrito"),
-                ]))
+            this.goTo,
           ],
         ),
         color: Colors.blue,
         padding: EdgeInsets.all(5),
       ),
     );
+  }
+}
+
+class GoToCart extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    Cart cart = Provider.of<Cart>(context);
+    return MaterialButton(
+        onPressed: () => {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => CartDetail(cart)),
+              ),
+            },
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Icon(Icons.shopping_cart),
+          Text("Ir al Carrito"),
+        ]));
   }
 }
 
@@ -151,22 +159,38 @@ class ProductDetail extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: ElevatedButton(
-        onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('${product.name} añadidas al carrito!'),
-              duration: Duration(seconds: 1),
-            ),
-          );
+      floatingActionButton: AddToCartButton(product: product, cart: cart),
+      bottomNavigationBar: GoToBottomBar(GoToCart(), cart),
+    );
+  }
+}
 
-          cart.addProduct(product);
-        },
-        child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [Text("Añadir al carrito"), Icon(Icons.add)]),
-      ),
-      bottomNavigationBar: GoToCartBottomBar(cart),
+class AddToCartButton extends StatelessWidget {
+  const AddToCartButton({
+    Key key,
+    @required this.product,
+    @required this.cart,
+  }) : super(key: key);
+
+  final Product product;
+  final Cart cart;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${product.name} añadidas al carrito!'),
+            duration: Duration(seconds: 1),
+          ),
+        );
+
+        cart.addProduct(product);
+      },
+      child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [Text("Añadir al carrito"), Icon(Icons.add)]),
     );
   }
 }
@@ -184,13 +208,41 @@ class CartDetail extends StatelessWidget {
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: cart.uniqueProducts
-                    .map<Widget>((product) => Text(
-                        "${product.name} - ${cart.totalOf(product)}",
-                        style: TextStyle(
-                            fontSize: 33,
-                            backgroundColor: Colors.lightGreenAccent)))
+                    .map<Widget>((product) =>
+                        ProductOnCartDetail(cart: cart, product: product))
                     .toList())
             : EmptyCart(),
+      ),
+      bottomNavigationBar: GoToBottomBar(GoToCart(), cart),
+    );
+  }
+}
+
+class ProductOnCartDetail extends StatelessWidget {
+  const ProductOnCartDetail({
+    Key key,
+    @required this.cart,
+    @required this.product,
+  }) : super(key: key);
+
+  final Cart cart;
+  final Product product;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListTile(
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Precio unitario: \$${product.price}"),
+            Text("Precio total: \$${cart.totalPriceOf(product)}")
+          ],
+        ),
+        tileColor: Colors.lightBlueAccent,
+        title: Text("${product.name}", style: TextStyle(fontSize: 23)),
+        subtitle: Text("Cantidad: ${cart.totalOf(product)}"),
       ),
     );
   }
