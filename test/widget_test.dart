@@ -11,7 +11,6 @@ import 'package:delivery_app/models/product_shelf.dart';
 import 'package:delivery_app/models/services/firestore_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:delivery_app/main.dart';
 
 ProductStand stand;
@@ -34,19 +33,13 @@ void main() {
 
   testWidgets('When a product is clicked it redirects to ProductDetail page',
       (WidgetTester tester) async {
-    await tester.pumpWidget(MyApp(productShelf));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byType(GestureDetector).first);
-    await tester.pumpAndSettle();
+    await _clickOnProduct(tester);
     expect(find.byType(ProductDetail), findsOneWidget);
   });
 
   testWidgets('A Product Detail shows the correct product',
       (WidgetTester tester) async {
-    await tester.pumpWidget(MyApp(productShelf));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byType(GestureDetector).first);
-    await tester.pumpAndSettle();
+    await _clickOnProduct(tester);
     expect(find.text("Ice Cream"), findsOneWidget);
   });
   testWidgets('There is a button that redirects to CartDetail on Home',
@@ -61,10 +54,7 @@ void main() {
 
   testWidgets('There is a button that redirects to CartDetail on ProductDetail',
       (WidgetTester tester) async {
-    await tester.pumpWidget(MyApp(productShelf));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byType(GestureDetector).first);
-    await tester.pumpAndSettle();
+    await _clickOnProduct(tester);
     expect(find.byType(MaterialButton), findsOneWidget);
     await tester.tap(find.byType(MaterialButton));
     await tester.pumpAndSettle();
@@ -73,12 +63,8 @@ void main() {
 
   testWidgets('Product Detail shows a button to add product to cart',
       (WidgetTester tester) async {
-    await tester.pumpWidget(MyApp(productShelf));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byType(GestureDetector).first);
-    await tester.pumpAndSettle();
+    await _clickOnProduct(tester);
     expect(find.byType(AddToCartButton), findsOneWidget);
-    expect(find.byIcon(Icons.add), findsOneWidget);
   });
 
   testWidgets('A cart has no products on a recently opened App',
@@ -95,11 +81,7 @@ void main() {
 
   testWidgets('A product can be added to the cart on ProductDetail page',
       (WidgetTester tester) async {
-    await tester.pumpWidget(MyApp(productShelf));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.byType(GestureDetector).first);
-    await tester.pumpAndSettle();
+    await _clickOnProduct(tester);
     await tester.tap(find.byType(AddToCartButton));
     await tester.tap(find.byType(MaterialButton));
     await tester.pumpAndSettle();
@@ -113,11 +95,7 @@ void main() {
 
   testWidgets('A cart shows te products and total of them',
       (WidgetTester tester) async {
-    await tester.pumpWidget(MyApp(productShelf));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.byType(GestureDetector).first);
-    await tester.pumpAndSettle();
+    await _clickOnProduct(tester);
     await tester.tap(find.byType(AddToCartButton));
     await tester.tap(find.byType(AddToCartButton));
     await tester.tap(find.byType(MaterialButton));
@@ -134,4 +112,11 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(EmptyCart), findsOneWidget);
   });
+}
+
+Future _clickOnProduct(WidgetTester tester) async {
+  await tester.pumpWidget(MyApp(productShelf));
+  await tester.pumpAndSettle();
+  await tester.tap(find.byType(GestureDetector).first);
+  await tester.pumpAndSettle();
 }
