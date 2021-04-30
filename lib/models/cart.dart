@@ -1,3 +1,4 @@
+import 'package:delivery_app/models/bag.dart';
 import 'package:delivery_app/models/product.dart';
 import 'package:flutter/foundation.dart';
 
@@ -31,5 +32,9 @@ class Cart extends ChangeNotifier {
 
   totalPriceOf(Product potentialProduct) {
     return totalOf(potentialProduct) * potentialProduct.price;
+  }
+
+  void addBag(Bag bagToAdd) {
+    addProduct(bagToAdd.product, times: bagToAdd.total);
   }
 }

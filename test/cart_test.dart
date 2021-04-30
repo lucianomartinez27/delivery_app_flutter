@@ -1,4 +1,5 @@
 import 'package:delivery_app/models/cart.dart';
+import 'package:delivery_app/models/bag.dart';
 import 'package:delivery_app/models/product.dart';
 import 'package:test/test.dart';
 
@@ -64,6 +65,17 @@ main() {
       cart.addProduct(iceCream, times: 3);
       expect(cart.totalOf(iceCream), equals(3));
       cart.addProduct(snacks, times: 0);
+      expect(cart.totalOf(snacks), equals(0));
+    });
+    test("Products can be added by a bag", () {
+      Bag bag = Bag.of(iceCream);
+      bag.addItem();
+      bag.addItem();
+      cart.addBag(bag);
+      expect(cart.totalOf(iceCream), equals(2));
+      Bag anotherBag = Bag.of(snacks);
+
+      cart.addBag(anotherBag);
       expect(cart.totalOf(snacks), equals(0));
     });
     test("Total price of a product is zero when it's not in the cart", () {
