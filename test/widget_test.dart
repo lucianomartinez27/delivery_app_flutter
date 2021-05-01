@@ -6,16 +6,25 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'dart:async';
-
 import 'package:delivery_app/models/product_shelf.dart';
 import 'package:delivery_app/models/services/firestore_manager.dart';
+import 'package:delivery_app/pages/app.dart';
+import 'package:delivery_app/pages/cart.dart';
+import 'package:delivery_app/pages/home.dart';
+import 'package:delivery_app/pages/product.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:delivery_app/main.dart';
 
 ProductStand stand;
 Stream<ProductShelf> productShelf;
 void main() {
+  Future _clickOnProduct(WidgetTester tester) async {
+    await tester.pumpWidget(MyApp(productShelf));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(GestureDetector).first);
+    await tester.pumpAndSettle();
+  }
+
   setUp(() {
     stand = ProductStand();
     stand.newProductList([
@@ -79,7 +88,7 @@ void main() {
         isFalse);
   });
 
-  testWidgets('A product can be added to the cart on ProductDetail page',
+  testWidgets('A product can be added to the cart from ProductDetail page',
       (WidgetTester tester) async {
     await _clickOnProduct(tester);
     await tester.tap(find.byType(AddToCartButton));
@@ -93,8 +102,7 @@ void main() {
         isTrue);
   });
 
-  testWidgets('A cart shows te products and total of them',
-      (WidgetTester tester) async {
+  testWidgets('A cart shows the added product', (WidgetTester tester) async {
     await _clickOnProduct(tester);
     await tester.tap(find.byType(AddToCartButton));
     await tester.tap(find.byType(AddToCartButton));
@@ -112,11 +120,26 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(EmptyCart), findsOneWidget);
   });
-}
 
-Future _clickOnProduct(WidgetTester tester) async {
-  await tester.pumpWidget(MyApp(productShelf));
-  await tester.pumpAndSettle();
-  await tester.tap(find.byType(GestureDetector).first);
-  await tester.pumpAndSettle();
+  testWidgets('ProductDetail has ChooseQuantity widget',
+      (WidgetTester tester) async {
+    await _clickOnProduct(tester);
+    expect(find.byType(ChooseQuantity), findsOneWidget);
+  });
+
+  testWidgets('It is possible to select the quantity of a product',
+      (WidgetTester tester) async {
+    await _clickOnProduct(tester);
+    await tester.pumpAndSettle();
+
+    expect(find.text("0"), findsOneWidget);
+    // searching for the add icon button
+    await tester.tap(find.byType(IconButton).at(1));
+    await tester.pumpAndSettle();
+    expect(find.text("1"), findsOneWidget);
+    // searching for the remove icon button
+    await tester.tap(find.byType(IconButton).at(0));
+    await tester.pumpAndSettle();
+    expect(find.text("0"), findsOneWidget);
+  });
 }
