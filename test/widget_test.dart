@@ -7,7 +7,7 @@
 
 import 'dart:async';
 import 'package:delivery_app/models/product_shelf.dart';
-import 'package:delivery_app/models/services/firestore_manager.dart';
+import 'package:delivery_app/services/firestore_manager.dart';
 import 'package:delivery_app/pages/app.dart';
 import 'package:delivery_app/pages/cart.dart';
 import 'package:delivery_app/pages/home.dart';

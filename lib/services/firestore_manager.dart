@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../firebase_recepcionist.dart';
-import '../product_shelf.dart';
+import 'package:delivery_app/models/firebase_recepcionist.dart';
+import 'package:delivery_app/models/product_shelf.dart';
 
 class FirestoreProductManager {
   FirebaseFirestore instance;
