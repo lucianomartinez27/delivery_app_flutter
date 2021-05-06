@@ -13,21 +13,31 @@ main() {
       snack = Product(name: "Snacks", price: 5);
     });
     test("Shelf is empty when it's created", () {
-      assert(shelf.isEmpty);
+      expect(shelf.isEmpty, isTrue);
     });
 
     test("A product can be added to the shelf", () {
       shelf.addProduct(iceCream);
-      assert(!shelf.isEmpty);
+      expect(shelf.isEmpty, isFalse);
     });
 
     test("A shelf can not contains the same product twice", () {
       shelf.addProduct(iceCream);
       shelf.addProduct(snack);
       shelf.addProduct(Product(name: "Ice Cream", price: 10));
-      expect(shelf.allProducts.length, 2);
-      assert(shelf.hasProduct(iceCream));
-      assert(shelf.hasProduct(snack));
+      expect(shelf.allProducts.length, equals(2));
+      expect(shelf.hasProduct(iceCream), isTrue);
+      expect(shelf.hasProduct(snack), isTrue);
+    });
+
+    test("Shelf with no explict category is categorized as General", () {
+      expect(shelf.isCategorizedAs('General'), isTrue);
+    });
+
+    test("Product Shelf can be categorized", () {
+      ProductShelf bazarShelf = ProductShelf.of('Bazar');
+      expect(bazarShelf.isCategorizedAs('General'), isFalse);
+      expect(bazarShelf.isCategorizedAs('Bazar'), isTrue);
     });
   });
 }

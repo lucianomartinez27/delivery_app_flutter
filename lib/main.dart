@@ -7,11 +7,8 @@ import 'package:flutter/material.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  FirestoreProductManager firestoreProductManager =
-      FirestoreProductManager(FirebaseFirestore.instance);
-  ProductStand stand = ProductStand();
-  firestoreProductManager.onNewProductsDo((newProduct) {
-    stand.newProductList(newProduct);
-  });
-  runApp(MyApp(stand.onNewProductList));
+  FirestoreShelfRestocking firestoreRestocking =
+      FirestoreShelfRestocking(FirebaseFirestore.instance);
+
+  runApp(MarketHome(await firestoreRestocking.getStock()));
 }

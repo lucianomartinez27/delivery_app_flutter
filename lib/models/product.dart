@@ -14,6 +14,11 @@ class Product {
     }
   }
 
+  // Is this the adequate way to add an imagen? I don't know.
+  String get takePicture =>
+      name.toLowerCase().splitMapJoin(RegExp(" "), onMatch: (m) => "_") +
+      '.jpg';
+
   bool isNamed(String potentialName) {
     return name == potentialName;
   }

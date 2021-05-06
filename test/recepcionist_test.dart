@@ -4,11 +4,14 @@ import 'package:delivery_app/models/product_shelf.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 main() {
+  FirebaseRecepcionist recepcionist;
+  setUp(() {
+    recepcionist = FirebaseRecepcionist();
+  });
+
   test('When there are not products the recepcionist return an empty Shelf',
       () {
     List<Map<String, dynamic>> products = [];
-
-    FirebaseRecepcionist recepcionist = FirebaseRecepcionist();
 
     ProductShelf productShelf = recepcionist.loadProducts(products);
     expect(productShelf.isEmpty, isTrue);
@@ -23,8 +26,6 @@ main() {
     Map<String, dynamic> snacks = Map.from({'price': 10, 'name': 'Snacks'});
     products.add(iceCream);
     products.add(snacks);
-
-    FirebaseRecepcionist recepcionist = FirebaseRecepcionist();
 
     ProductShelf productShelf = recepcionist.loadProducts(products);
     expect(productShelf.isEmpty, isFalse);

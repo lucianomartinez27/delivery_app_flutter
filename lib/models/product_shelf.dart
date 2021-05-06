@@ -4,6 +4,10 @@ import 'package:flutter/foundation.dart';
 
 class ProductShelf extends ChangeNotifier {
   Set<Product> _products = {};
+  String category = 'General';
+  ProductShelf();
+  ProductShelf.of(String productsCategory) : category = productsCategory;
+
   bool get isEmpty => _products.isEmpty;
 
   get allProducts => UnmodifiableListView(_products);
@@ -17,7 +21,9 @@ class ProductShelf extends ChangeNotifier {
 
   bool hasProduct(Product potentialProduct) {
     return _products
-        .where((element) => element.isNamed(potentialProduct.name))
+        .where((product) => product.isNamed(potentialProduct.name))
         .isNotEmpty;
   }
+
+  isCategorizedAs(String productsCategory) => productsCategory == category;
 }

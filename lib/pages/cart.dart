@@ -11,7 +11,13 @@ class CartDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: Colors.grey.shade900,
+        title: Text(
+          "Carrito",
+          style: TextStyle(color: Color(0xffd9ad4a)),
+        ),
+      ),
       body: Center(
         child: cart.hasProducts()
             ? Column(

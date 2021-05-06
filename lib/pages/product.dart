@@ -15,11 +15,24 @@ class ProductDetail extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => Bag.of(product),
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          backgroundColor: Colors.grey.shade900,
+          title: Text(
+            "Tienda",
+            style: TextStyle(color: Color(0xffd9ad4a)),
+          ),
+        ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              SizedBox(
+                width: 300,
+                height: 200,
+                child: Card(
+                  child: Image.asset('assets/images/${product.takePicture}'),
+                ),
+              ),
               Text(product.name, style: TextStyle(fontSize: 32)),
               Card(
                 color: Colors.amber,

@@ -1,35 +1,37 @@
 import 'package:delivery_app/models/bag.dart';
 import 'package:delivery_app/models/cart.dart';
-import 'package:delivery_app/models/product_shelf.dart';
+import 'package:delivery_app/models/market.dart';
+import 'package:delivery_app/pages/categories.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'cart.dart';
-import 'home.dart';
 
-class MyApp extends StatelessWidget {
-  final Stream<ProductShelf> productShelf;
+class MarketHome extends StatelessWidget {
+  final Market market;
   final Cart cart = Cart();
-  MyApp(this.productShelf);
+  MarketHome(this.market);
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        StreamProvider<ProductShelf>(
-            create: (context) => this.productShelf,
-            initialData: ProductShelf()),
+        ChangeNotifierProvider<Market>(
+          create: (context) => this.market,
+        ),
         ChangeNotifierProvider<Cart>(create: (context) => this.cart)
       ],
       child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
+        title: 'Product Market',
         home: Scaffold(
           appBar: AppBar(
-            title: Text("Mi Tienda"),
+            backgroundColor: Colors.grey.shade900,
+            title: Text(
+              "Tienda",
+              style: TextStyle(color: Color(0xffd9ad4a)),
+            ),
           ),
-          body: HomePage(),
+          body: MarketCategories(),
+          bottomNavigationBar: GoToBottomBar(GoToCart(), cart),
         ),
       ),
     );
@@ -50,12 +52,13 @@ class GoToBottomBar extends StatelessWidget {
           children: [
             Text(
               "Total: \$${cart.totalPrice}",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, color: Color(0xffd9ad4a)),
             ),
             this.goTo,
           ],
         ),
-        color: Colors.blue,
+        color: Colors.grey.shade900,
         padding: EdgeInsets.all(5),
       ),
     );
@@ -73,8 +76,11 @@ class GoToCart extends StatelessWidget {
               ),
             },
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Icon(Icons.shopping_cart),
-          Text("Ir al Carrito"),
+          Icon(Icons.shopping_cart, color: Color(0xffd9ad4a)),
+          Text(
+            "Ir al Carrito",
+            style: TextStyle(color: Color(0xffd9ad4a)),
+          ),
         ]));
   }
 }
@@ -91,6 +97,9 @@ class AddToCartButton extends StatelessWidget {
   Widget build(BuildContext context) {
     Bag bag = Provider.of<Bag>(context);
     return ElevatedButton(
+      style: ButtonStyle(
+          backgroundColor:
+              MaterialStateProperty.resolveWith((states) => Color(0xffd9ad4a))),
       onPressed: () {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
